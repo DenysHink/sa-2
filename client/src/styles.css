@@ -1,0 +1,42 @@
+:root{color-scheme: light dark;}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:#0b0c10;color:#e5e7eb}
+.container{max-width:960px;margin:0 auto;padding:24px}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0;margin-bottom:16px;border-bottom:1px solid #25313e}
+.nav a{color:#9fb3c8;text-decoration:none;margin-right:12px}
+.nav .brand{font-weight:700;color:#e5e7eb}
+.nav .btn{margin-left:8px}
+.card{background:#111827;border:1px solid #25313e;border-radius:8px;padding:16px}
+.form{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+input,select{padding:10px;border-radius:6px;border:1px solid #374151;background:#0b1220;color:#e5e7eb}
+.btn{padding:10px 14px;border-radius:6px;border:1px solid #374151;background:#0ea5e9;color:#081018;cursor:pointer}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.error{margin-top:8px;color:#fecaca}
+.success{margin-top:8px;color:#bbf7d0}
+.muted{color:#9fb3c8;font-size:.9em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+.tile{background:#0b1220;border:1px solid #25313e;border-radius:6px;padding:12px}
+.label{display:block;color:#9fb3c8;font-size:.85em}
+.points ul{list-style:none;padding:0;margin:0}
+.points li{display:flex;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid #25313e}
+.points li.passed{opacity:.6}
+.current-next{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+
+/* Login page layout */
+.login-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;align-items:center;min-height:70vh}
+.login-left{display:flex;justify-content:center}
+.login-card{width:100%;max-width:420px;background:#111827;border:1px solid #25313e;border-radius:12px;padding:24px}
+.login-form{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.login-label{color:#9fb3c8;font-size:.9em}
+.login-input{padding:12px;border-radius:8px;border:1px solid #374151;background:#0b1220;color:#e5e7eb}
+.login-btn{margin-top:8px;padding:12px;border-radius:8px;border:1px solid #374151;background:#22c55e;color:#081018;cursor:pointer}
+.login-link{margin-top:4px;background:transparent;border:none;color:#9fb3c8;cursor:pointer;text-decoration:underline;width:max-content}
+.login-right{display:flex;justify-content:center}
+.bus-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:linear-gradient(135deg,#0b1220,#0b0c10);border:1px dashed #25313e;border-radius:12px;padding:24px;min-height:360px}
+.bus-art{font-size:96px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.4))}
+.bus-img{width:100%;max-width:360px;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.35);margin-bottom:12px}
+
+@media (max-width: 900px){
+  .login-grid{grid-template-columns:1fr}
+  .login-right{order:-1;margin-bottom:12px}
+}
