@@ -21,21 +21,15 @@ export default function Navbar() {
   return (
     <nav className="nav">
       <div className="nav-left">
-        <Link to="/" className="brand">🚌 Contador</Link>
+        <Link to="/login" className="brand">Login</Link>
       </div>
       <div className="nav-right">
-        <Link to="/">Status Público</Link>
         {token ? (
           <>
             <Link to="/dashboard">Dashboard</Link>
-            <button className="btn" onClick={onLogout}>Sair</button>
+            <Link to="/bus-locator">Localizar Ônibus</Link>
           </>
-        ) : (
-          <Link to="/login">Entrar</Link>
-        )}
-        <button className="btn" onClick={toggleDemo} title="Alternar modo Demonstração">
-          Demo: {demo ? 'ON' : 'OFF'}
-        </button>
+        ) : null}
       </div>
     </nav>
   )

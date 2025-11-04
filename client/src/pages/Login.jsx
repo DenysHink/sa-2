@@ -35,10 +35,28 @@ export default function Login() {
   }
 
   return (
-    <div className="login-grid">
-      <div className="login-left">
-        <div className="login-card">
-          <h2>Entrar</h2>
+    <div className="login-wrap">
+      <div className="login-showcase">
+        <div className="login-promo">
+          <div className="promo-logo">SUA MARCA</div>
+          <div>
+            <div className="promo-heading">Sistema de Contagem de Ônibus</div>
+            <div className="promo-desc">Acompanhe a localização e a ocupação dos ônibus em tempo real.</div>
+            <div className="promo-list">
+              <div className="promo-item">• Mapa com posição dos ônibus</div>
+              <div className="promo-item">• Ocupação atual e capacidade máxima</div>
+              <div className="promo-item">• Dashboard e painel administrativo</div>
+              <div className="promo-item">• Consulta pública rápida por número</div>
+            </div>
+          </div>
+          <img
+            className="promo-bus-img"
+            src={import.meta.env.VITE_LOGIN_BUS_IMAGE || '/bus-bw.png'}
+            alt="Ônibus"
+          />
+        </div>
+        <div className="login-form-panel">
+          <h2>Login</h2>
           <form className="login-form" onSubmit={onSubmit}>
             <label className="login-label">Email</label>
             <input
@@ -58,6 +76,10 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <label className="remember">
+              <input type="checkbox" defaultChecked />
+              Lembrar-me
+            </label>
             <button className="login-btn" type="submit" disabled={loading}>
               {loading ? 'Entrando...' : 'Acessar'}
             </button>
@@ -66,17 +88,6 @@ export default function Login() {
             </button>
           </form>
           {error && <div className="error" style={{marginTop: 8}}>{error}</div>}
-        </div>
-      </div>
-      <div className="login-right">
-        <div className="bus-hero">
-          <img
-            className="bus-img"
-            src={import.meta.env.VITE_BUS_IMAGE || '/bus.png'}
-            alt="Ilustração de ônibus"
-          />
-          <h3>Gestão de Passageiros</h3>
-          <p className="muted">Monitore a lotação e o progresso das rotas em tempo real.</p>
         </div>
       </div>
     </div>

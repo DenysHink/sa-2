@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { apiFetch } from '../services/api'
 import { useNavigate } from 'react-router-dom'
+import BusMap from '../components/BusMap'
 
 export default function Dashboard() {
   const [profile, setProfile] = useState({ name: 'Demo User', role: 'driver' })
@@ -9,6 +10,9 @@ export default function Dashboard() {
   const [routesLoading, setRoutesLoading] = useState(false)
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
+  const [buses, setBuses] = useState([])
+  const [selectedId, setSelectedId] = useState('1')
+  const [points, setPoints] = useState([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -53,6 +57,22 @@ export default function Dashboard() {
     })()
   }, [])
 
+  useEffect(() => {
+    const base = { lat: -27.5945, lng: -48.5477 }
+    const deltas = [[0,0],[0.015,-0.08],[0.04,-0.10],[0.06,-0.12],[-0.06,-0.09],[-0.03,-0.06],[0.02,0.06],[0,0.09],[-0.02,0.05],[0.045,0.01]]
+    const routePoints = deltas.map(([dlat, dlng]) => ({ lat: base.lat + dlat, lng: base.lng + dlng }))
+    setPoints(routePoints)
+    const list = Array.from({ length: 10 }).map((_, i) => {
+      const id = i + 1
+      const maxCapacity = 40 + ((id % 3) * 10)
+      const currentPassengers = Math.min(((id * 7) % maxCapacity), maxCapacity)
+      const occupancyPercentage = Math.round((currentPassengers / maxCapacity) * 100)
+      const p = routePoints[i % routePoints.length]
+      return { id, lat: p.lat, lng: p.lng, maxCapacity, currentPassengers, occupancyPercentage, targetPointIndex: i % routePoints.length }
+    })
+    setBuses(list)
+  }, [])
+
   const onUpdate = async (e) => {
     e.preventDefault()
     setMsg('')
@@ -70,9 +90,31 @@ export default function Dashboard() {
       if (!res.success) throw new Error(res.message || 'Falha ao atualizar rota')
       setMsg('Status atualizado com sucesso!')
     } catch (err) {
-      // Modo demonstração: confirma mesmo em caso de erro
       setMsg('Status atualizado (demo). A API pode não estar acessível, mas a ação foi simulada com sucesso.')
     }
+
+    const idToUpdate = Number(form.routeId)
+    setBuses(list => list.map(b => {
+      if (Number(b.id) !== idToUpdate) return b
+      let currentPassengers = b.currentPassengers
+      if (form.currentPassengers !== '') {
+        const n = Number(form.currentPassengers)
+        currentPassengers = Math.max(0, Math.min(n, b.maxCapacity))
+      }
+      let lat = b.lat, lng = b.lng
+      let targetPointIndex = b.targetPointIndex
+      if (form.currentPointIndex !== '') {
+        const idx = Number(form.currentPointIndex)
+        const safeIdx = ((idx % points.length) + points.length) % points.length
+        targetPointIndex = safeIdx
+        if (points[safeIdx]) {
+          lat = points[safeIdx].lat
+          lng = points[safeIdx].lng
+        }
+      }
+      const occupancyPercentage = Math.round((currentPassengers / b.maxCapacity) * 100)
+      return { ...b, currentPassengers, occupancyPercentage, lat, lng, targetPointIndex }
+    }))
   }
 
   return (
@@ -126,6 +168,64 @@ export default function Dashboard() {
         <summary>Como encontrar o ID da rota?</summary>
         <p>Esta tela já tenta listar rotas automaticamente via <code>GET /api/routes</code>. Se a API não responder, uma lista de demonstração é exibida.</p>
       </details>
+
+      <h3>Pesquisar Ônibus</h3>
+      <div className="muted">Selecione um número de 1 a 10 para visualizar no mapa e ver a ocupação.</div>
+      <div className="chips">
+        {Array.from({ length: 10 }).map((_, i) => {
+          const id = String(i + 1)
+          const active = selectedId === id
+          return (
+            <button
+              key={id}
+              type="button"
+              className={`chip ${active ? 'active' : ''}`}
+              onClick={() => setSelectedId(id)}
+            >
+              {id}
+            </button>
+          )
+        })}
+      </div>
+      <div className="form" style={{ marginTop: 8 }}>
+        <input
+          type="number"
+          min={1}
+          max={10}
+          placeholder="Número do ônibus (1-10)"
+          value={selectedId}
+          onChange={(e) => {
+            const v = e.target.value
+            if (!v) return setSelectedId('')
+            const n = Number(v)
+            if (n >= 1 && n <= 10) setSelectedId(String(n))
+          }}
+        />
+      </div>
+      <div className="map-section">
+        <div className="map-container">
+          <BusMap buses={buses} selectedId={selectedId} center={[-27.5945, -48.5477]} zoom={11} points={points} />
+        </div>
+      </div>
+      {(() => {
+        const b = buses.find(x => String(x.id) === String(selectedId))
+        return b ? (
+          <div className="grid" style={{ marginTop: 12 }}>
+            <div className="tile">
+              <span className="label">Ônibus</span>
+              <strong>{b.id}</strong>
+            </div>
+            <div className="tile">
+              <span className="label">Ocupação</span>
+              <strong>{b.currentPassengers} / {b.maxCapacity} ({b.occupancyPercentage}%)</strong>
+            </div>
+            <div className="tile">
+              <span className="label">Localização</span>
+              <strong>{b.lat.toFixed(4)}, {b.lng.toFixed(4)}</strong>
+            </div>
+          </div>
+        ) : null
+      })()}
     </div>
   )
 }

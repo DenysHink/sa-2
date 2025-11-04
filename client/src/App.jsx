@@ -4,6 +4,8 @@ import Navbar from './components/Navbar'
 import PublicStatus from './pages/PublicStatus'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
+import BusLocator from './pages/BusLocator'
+import Admin from './pages/Admin'
 import { getToken } from './services/api'
 
 function PrivateRoute({ children }) {
@@ -23,6 +25,22 @@ export default function App() {
           element={
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <Admin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/bus-locator"
+          element={
+            <PrivateRoute>
+              <BusLocator />
             </PrivateRoute>
           }
         />
